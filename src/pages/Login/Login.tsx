@@ -12,8 +12,24 @@ export default function Login() {
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='rounded bg-white p-10 shadow-sm'>
               <div className='text-2xl'>Đăng nhập</div>
-              <input name='email' type='email' className='mt-8' placeholder='Email' />
-              <input name='password' type='password' className='mt-2' placeholder='Password' autoComplete='on' />
+              <div className='mt-8'>
+                <input
+                  name='email'
+                  type='email'
+                  placeholder='Email'
+                  className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focs:shadow-sm'
+                />
+                <div className='mt-1 text-red-600 min-h-[1rem] text-sm'></div>
+              </div>
+              <div className='mt-3'>
+                <input
+                  name='password'
+                  type='password'
+                  placeholder='Password'
+                  className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focs:shadow-sm'
+                />
+                <div className='mt-1 text-red-600 min-h-[1rem] text-sm'></div>
+              </div>
               <div className='mt-3'>
                 <button
                   type='submit'
