@@ -24,6 +24,7 @@ export default function Login() {
               <div className='mt-3'>
                 <input
                   name='password'
+                  autoComplete="on"
                   type='password'
                   placeholder='Password'
                   className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focs:shadow-sm'
