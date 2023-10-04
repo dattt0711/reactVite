@@ -1,6 +1,6 @@
 import type { RegisterOptions, UseFormGetValues } from 'react-hook-form'
 import * as yup from 'yup'
-type Rules = { [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions }
+// type Rules = { [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions }
 
 // export const getRules = (getValues?: UseFormGetValues<any>): Rules => ({
 //     email: {
@@ -50,26 +50,19 @@ type Rules = { [key in 'email' | 'password' | 'confirm_password']?: RegisterOpti
 //     },
 // })
 
-export const schema = yup
-    .object({
-        email: yup
-            .string()
-            .required('email must be required')
-            .email('Not email format'),
-        password: yup
-            .string()
-            .required('password must be required')
-            .min(6, 'length from 6 to 160'),
-        // .max(160, 'length from 6 to 160'),
-        confirm_password: yup
-            .string()
-            .required('confirm_password must be required')
-            .min(6, 'length from 6 to 160')
-            .max(160, 'length from 6 to 160')
-            .oneOf([yup.ref('password')], 'password does not match'),
-    })
+export const schema = yup.object({
+  email: yup.string().required('email must be required').email('Not email format'),
+  password: yup.string().required('password must be required').min(6, 'length from 6 to 160'),
+  // .max(160, 'length from 6 to 160'),
+  confirm_password: yup
+    .string()
+    .required('confirm_password must be required')
+    .min(6, 'length from 6 to 160')
+    .max(160, 'length from 6 to 160')
+    .oneOf([yup.ref('password')], 'password does not match')
+})
 
-const loginSchema = schema.omit(['confirm_password']);
+const loginSchema = schema.omit(['confirm_password'])
 
-export type Schema = yup.InferType<typeof schema>;
-export type LoginSchema = yup.InferType<typeof loginSchema>;
+export type Schema = yup.InferType<typeof schema>
+export type LoginSchema = yup.InferType<typeof loginSchema>

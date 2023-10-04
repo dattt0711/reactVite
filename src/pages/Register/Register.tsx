@@ -1,23 +1,33 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { schema, Schema } from '../../utils/rules';
-import Input from '../../components/Input';
-import { yupResolver } from "@hookform/resolvers/yup"
-type FormData = Schema;
+import { schema, Schema } from '../../utils/rules'
+import Input from '../../components/Input'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { registerAccount } from '../../apis/auth.api'
+import * as _ from 'lodash'
+type FormData = Schema
 export default function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    getValues,
     watch,
+    formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema)
-  }
-  );
+  })
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+  })
   const onSubmit = handleSubmit((data) => {
     console.log(data, 'data')
+    const body = _.omit(data, ['confirm_password'])
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log(data, 'data')
+      }
+    })
   })
   return (
     <div className='bg-orange'>
@@ -45,7 +55,7 @@ export default function Register() {
                 className='mt-3'
                 name='password'
                 register={register}
-                autoComplete="on"
+                autoComplete='on'
               />
               <Input
                 type='password'
@@ -54,7 +64,7 @@ export default function Register() {
                 className='mt-3'
                 name='confirm_password'
                 register={register}
-                autoComplete="on"
+                autoComplete='on'
               />
               <div className='mt-3'>
                 <button
