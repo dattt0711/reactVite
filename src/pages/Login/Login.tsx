@@ -1,6 +1,49 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { schema, Schema } from '../../utils/rules'
+import Input from '../../components/Input'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { isAxiosUnprocessableEntityError } from '../../utils/utils'
+import { ResponseApi } from '../../types/utils.type';
+import { login } from '../../apis/auth.api'
+
+type FormData = Omit<Schema, 'confirm_password'>
+const loginSchema = schema.omit(['confirm_password']);
 export default function Login() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setError,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(loginSchema)
+  })
+  const loginMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => login(body)
+  })
+  const onSubmit = handleSubmit((data) => {
+    loginMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log(data, 'data')
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ResponseApi<FormData>>(error)) {
+          const formError = error.response?.data.data;
+          if (formError) {
+            Object.keys(formError).forEach(key => {
+              setError(key as keyof FormData, {
+                message: formError[key as keyof FormData],
+                type: 'Server',
+              })
+            })
+          }
+        }
+      }
+    })
+  })
   return (
     <div className='bg-orange'>
       {/* <Helmet>
@@ -10,27 +53,25 @@ export default function Login() {
       <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
-            <form className='rounded bg-white p-10 shadow-sm'>
+            <form className='rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng nhập</div>
-              <div className='mt-8'>
-                <input
-                  name='email'
-                  type='email'
-                  placeholder='Email'
-                  className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focs:shadow-sm'
-                />
-                <div className='mt-1 text-red-600 min-h-[1rem] text-sm'></div>
-              </div>
-              <div className='mt-3'>
-                <input
-                  name='password'
-                  autoComplete="on"
-                  type='password'
-                  placeholder='Password'
-                  className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focs:shadow-sm'
-                />
-                <div className='mt-1 text-red-600 min-h-[1rem] text-sm'></div>
-              </div>
+              <Input
+                type='email'
+                errorMessage={errors.email?.message}
+                placeholder='Enter email'
+                className='mt-8'
+                name='email'
+                register={register}
+              />
+              <Input
+                type='password'
+                errorMessage={errors.password?.message}
+                placeholder='Enter password'
+                className='mt-3'
+                name='password'
+                register={register}
+                autoComplete='on'
+              />
               <div className='mt-3'>
                 <button
                   type='submit'
