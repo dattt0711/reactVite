@@ -10,6 +10,7 @@ import { ErrorResponse } from '../../types/utils.type';
 import * as _ from 'lodash'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 import { AppContext } from '../../contexts/app.context'
+import Button from '../../components/Button'
 type FormData = Schema
 export default function Register() {
   const navigate = useNavigate();
@@ -86,12 +87,14 @@ export default function Register() {
                 autoComplete='on'
               />
               <div className='mt-3'>
-                <button
+                <Button
                   type='submit'
                   className='flex  w-full items-center justify-center bg-red-500 py-4 px-2 text-sm uppercase text-white hover:bg-red-600'
+                  isLoading={registerAccountMutation.isLoading}
+                  disabled={registerAccountMutation.isLoading}
                 >
                   Đăng ký
-                </button>
+                </Button>
               </div>
               <div className='mt-8 flex items-center justify-center'>
                 <span className='text-gray-400'>Bạn có tài khoản?</span>
