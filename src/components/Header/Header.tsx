@@ -3,14 +3,14 @@ import NavHeader from '../../components/NavHeader'
 import Popover from '../../components/Popover'
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { logout } from '../../apis/auth.api'
+import authApi from '../../apis/auth.api'
 import { AppContext } from '../../contexts/app.context'
 
 export default function Header() {
     const { setIsAuthenticated } = useContext(AppContext);
     const navigate = useNavigate();
     const logoutMutation = useMutation({
-        mutationFn: logout,
+        mutationFn: authApi.logout,
         onSuccess: () => {
             setIsAuthenticated(false);
         }
