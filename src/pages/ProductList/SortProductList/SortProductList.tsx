@@ -1,13 +1,36 @@
 import React from 'react'
+import { QueryConfig } from '../../../pages/ProductList/ProductList'
+import { ProductListConfig } from '../../../types/product.type'
+import classNames from 'classnames'
 
-export default function SortProductList() {
+interface Props {
+  queryConfig: QueryConfig
+  pageSize: number
+}
+export default function SortProductList({ queryConfig, pageSize }: Props) {
+  const { sort_by = 'createdAt' } = queryConfig
+  const isActiveSortBy = (sortByValue: Exclude<ProductListConfig['sort_by'], undefined>) => {
+    return sort_by === sortByValue
+  }
   return (
     <div className='bg-grey-300/40 py-4 px-3'>
       <div className='flex flex-wrap items-center justify-between gap-2'>
         <div className='flex items-center flex-wrap gap-2'>
           <div className=''>Sap xep theo</div>
-          <div className='h-8 px-4 capitalize bg-orange text-white text-sm hover:bg-orange/80'>Phổ biến</div>
-          <button className={'h-8 px-4 text-center text-sm capitalize bg-orange text-white hover:bg-orange/80'}>
+          <button
+            className={classNames('h-8 px-4 text-center text-sm capitalize', {
+              'bg-orange text-white hover:bg-orange/80': isActiveSortBy('view'),
+              'bg-white text-black hover:bg-slate-100': !isActiveSortBy('view')
+            })}
+          >
+            Phổ biến
+          </button>
+          <button
+            className={classNames('h-8 px-4 text-center text-sm capitalize', {
+              'bg-orange text-white hover:bg-orange/80': isActiveSortBy('view'),
+              'bg-white text-black hover:bg-slate-100': !isActiveSortBy('view')
+            })}
+          >
             Mới nhất
           </button>
           <button className={'h-8 px-4 text-center text-sm capitalize bg-orange text-white hover:bg-orange/80'}>

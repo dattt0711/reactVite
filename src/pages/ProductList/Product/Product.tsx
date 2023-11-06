@@ -14,9 +14,7 @@ export default function Product({ product }: Props) {
       <div className='overflow-hidden rounded-sm bg-white shadow transition-transform duration-100 hover:translate-y-[-0.04rem] hover:shadow-md'>
         <div className='relative w-full pt-[100%]'>
           <img
-            src={
-              product.image
-            }
+            src={product.image}
             alt={'error'}
             className='absolute top-0 left-0 h-full w-full bg-white object-cover'
           />
