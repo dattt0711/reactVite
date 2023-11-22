@@ -4,6 +4,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom';
 import ProductRating from '../../components/ProductRating';
 import DOMPurify from 'dompurify';
+import QuantityController from '../../components/QuantityController';
 
 export default function ProductDetail() {
     const { id } = useParams();
@@ -95,13 +96,13 @@ export default function ProductDetail() {
                             </div>
                             <div className='mt-8 flex items-center'>
                                 <div className='capitalize text-gray-500'>Số lượng</div>
-                                {/* <QuantityController
+                                <QuantityController
                                     onDecrease={handleBuyCount}
                                     onIncrease={handleBuyCount}
                                     onType={handleBuyCount}
                                     value={buyCount}
                                     max={product.quantity}
-                                /> */}
+                                />
                                 <div className='ml-6 text-sm text-gray-500'>
                                     {product.quantity}
                                 </div>
