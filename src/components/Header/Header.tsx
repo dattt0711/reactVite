@@ -1,11 +1,13 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import NavHeader from '../../components/NavHeader'
 import Popover from '../../components/Popover'
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import authApi from '../../apis/auth.api'
 import { AppContext } from '../../contexts/app.context'
-
+import { purchasesStatus } from '../../constants/purchase'
+import path from '../../constants/path'
+import purchaseApi from '../../apis/purchase.api'
 export default function Header() {
     const { setIsAuthenticated } = useContext(AppContext);
     const navigate = useNavigate();
@@ -18,6 +20,11 @@ export default function Header() {
     const handleLogout = () => {
         logoutMutation.mutate();
     }
+    const { data: purchasesInCartData } = useQuery({
+        queryKey: ['purchases', { status: purchasesStatus.inCart }],
+        queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
+    })
+    const purchasesInCart = purchasesInCartData?.data.data;
     return (
         <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white'>
             <div className='container'>
@@ -60,49 +67,49 @@ export default function Header() {
                         <Popover
                             renderPopover={
                                 <div className='relative  max-w-[400px] rounded-sm border border-gray-200 bg-white text-sm shadow-md'>
-                                    {/* {purchasesInCart && purchasesInCart.length > 0 ? (
-                                    <div className='p-2'>
-                                        <div className='capitalize text-gray-400'>Sản phẩm mới thêm</div>
-                                        <div className='mt-5'>
-                                            {purchasesInCart.slice(0, MAX_PURCHASES).map((purchase) => (
-                                                <div className='mt-2 flex py-2 hover:bg-gray-100' key={purchase._id}>
-                                                    <div className='flex-shrink-0'>
-                                                        <img
-                                                            src={purchase.product.image}
-                                                            alt={purchase.product.name}
-                                                            className='h-11 w-11 object-cover'
-                                                        />
+                                    {purchasesInCart && purchasesInCart.length > 0 ? (
+                                        <div className='p-2'>
+                                            <div className='capitalize text-gray-400'>Sản phẩm mới thêm</div>
+                                            <div className='mt-5'>
+                                                {purchasesInCart.slice(0, 2).map((purchase) => (
+                                                    <div className='mt-2 flex py-2 hover:bg-gray-100' key={purchase._id}>
+                                                        <div className='flex-shrink-0'>
+                                                            <img
+                                                                src={purchase.product.image}
+                                                                alt={purchase.product.name}
+                                                                className='h-11 w-11 object-cover'
+                                                            />
+                                                        </div>
+                                                        <div className='ml-2 flex-grow overflow-hidden'>
+                                                            <div className='truncate'>{purchase.product.name}</div>
+                                                        </div>
+                                                        <div className='ml-2 flex-shrink-0'>
+                                                            <span className='text-orange'>₫{(purchase.product.price)}</span>
+                                                        </div>
                                                     </div>
-                                                    <div className='ml-2 flex-grow overflow-hidden'>
-                                                        <div className='truncate'>{purchase.product.name}</div>
-                                                    </div>
-                                                    <div className='ml-2 flex-shrink-0'>
-                                                        <span className='text-orange'>₫{formatCurrency(purchase.product.price)}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div className='mt-6 flex items-center justify-between'>
-                                            <div className='text-xs capitalize text-gray-500'>
-                                                {purchasesInCart.length > MAX_PURCHASES ? purchasesInCart.length - MAX_PURCHASES : ''} Thêm
-                                                hàng vào giỏ
+                                                ))}
                                             </div>
-                                            <Link
-                                                to={path.cart}
-                                                className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'
-                                            >
-                                                Xem giỏ hàng
-                                            </Link>
+                                            <div className='mt-6 flex items-center justify-between'>
+                                                <div className='text-xs capitalize text-gray-500'>
+                                                    {purchasesInCart.length > 5 ? purchasesInCart.length - 5 : ''} Thêm
+                                                    hàng vào giỏ
+                                                </div>
+                                                <Link
+                                                    to={path.cart}
+                                                    className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'
+                                                >
+                                                    Xem giỏ hàng
+                                                </Link>
+                                            </div>
                                         </div>
-                                    </div>
-                                ) : 
-                                (
-                                    <div className='flex h-[300px] w-[300px] flex-col items-center justify-center p-2'>
-                                        <img src={noproduct} alt='no purchase' className='h-24 w-24' />
-                                        <div className='mt-3 capitalize'>Chưa có sản phẩm</div>
-                                    </div>
-                                )
-                                } */}
+                                    ) :
+                                        (
+                                            <div className='flex h-[300px] w-[300px] flex-col items-center justify-center p-2'>
+                                                <img src="https://images.unsplash.com/photo-1682687982204-f1a77dcc3067?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8" alt='no purchase' className='h-24 w-24' />
+                                                <div className='mt-3 capitalize'>Chưa có sản phẩm</div>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             }
                         >
@@ -121,11 +128,11 @@ export default function Header() {
                                         d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z'
                                     />
                                 </svg>
-                                {/* {/* {purchasesInCart && purchasesInCart.length > 0 && ( */}
-                                <span className='absolute top-[-5px] left-[17px] rounded-full bg-white px-[9px] py-[1px] text-xs text-orange '>
-                                    {10}
-                                </span>
-                                {/* )} */}
+                                {purchasesInCart && purchasesInCart.length > 0 && (
+                                    <span className='absolute top-[-5px] left-[17px] rounded-full bg-white px-[9px] py-[1px] text-xs text-orange '>
+                                        {purchasesInCart.length}
+                                    </span>
+                                )}
                             </Link>
                         </Popover>
                     </div>
