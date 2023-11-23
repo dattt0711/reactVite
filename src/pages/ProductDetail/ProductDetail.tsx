@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import productApi from '../../apis/product.api'
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import ProductRating from '../../components/ProductRating'
 import DOMPurify from 'dompurify'
 import QuantityController from '../../components/QuantityController'
+import purchaseApi from '../../apis/purchase.api'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -15,6 +16,10 @@ export default function ProductDetail() {
   })
   const handleBuyCount = (value: number) => {
     setBuyCount(value)
+  }
+  const addToCartMutation = useMutation(purchaseApi.addToCart)
+  const addToCart = () => {
+    addToCartMutation.mutate({ buy_count: buyCount, product_id: product?._id as string })
   }
   const product = productDetailData?.data.data
   if (!product) return null
@@ -114,7 +119,7 @@ export default function ProductDetail() {
               </div>
               <div className='mt-8 flex items-center'>
                 <button
-                  // onClick={addToCart}
+                  onClick={addToCart}
                   className='flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5'
                 >
                   <svg
