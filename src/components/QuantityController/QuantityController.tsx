@@ -1,5 +1,5 @@
 import InputNumber, { InputNumberProps } from '../../components/InputNumber'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface Props extends InputNumberProps {
   max?: number
@@ -18,6 +18,7 @@ export default function QuantityController({
   classNameWrapper = 'ml-10',
   ...rest
 }: Props) {
+  const [localValue, setLocalValue] = useState<number>(Number(value))
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let _value = Number(event.target.value)
     if (max !== undefined && _value > max) {
@@ -27,6 +28,7 @@ export default function QuantityController({
     }
 
     onType && onType(_value)
+    setLocalValue(_value);
   }
   const increase = () => {
     let _value = Number(value) + 1
@@ -34,6 +36,8 @@ export default function QuantityController({
       _value = max
     }
     onIncrease && onIncrease(_value)
+    setLocalValue(_value);
+
   }
   const decrease = () => {
     let _value = Number(value) - 1
@@ -41,6 +45,7 @@ export default function QuantityController({
       _value = 1
     }
     onDecrease && onDecrease(_value)
+    setLocalValue(_value);
   }
   return (
     <div className={'flex items-center ' + classNameWrapper}>
@@ -65,7 +70,7 @@ export default function QuantityController({
         classNameInput='h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-none'
         onChange={handleChange}
         // onBlur={handleBlur}
-        // value={value || localValue}
+        value={value || localValue}
         value={value}
         {...rest}
       />
